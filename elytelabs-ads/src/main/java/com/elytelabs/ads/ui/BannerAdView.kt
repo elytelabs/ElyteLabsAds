@@ -2,6 +2,7 @@ package com.elytelabs.ads.ui
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.os.Handler
 import android.os.Looper
@@ -18,24 +19,16 @@ import com.elytelabs.ads.databinding.BannerAdBinding
  * A drop-in banner ad view that displays a cross-promotional Elyte Labs ad.
  *
  * Place this view in your layout XML (typically anchored to the bottom of the screen)
- * and call [loadAd] once the [AdsManager] has finished loading ads.
+ * and call [loadAd] once the [AdsManager] has finished loading.
  *
- * The banner automatically refreshes every 30 seconds to show a different
- * randomly selected ad from the cached pool.
+ * The banner auto-refreshes (default 30s, configurable via [com.elytelabs.ads.AdsConfig])
+ * with a smooth crossfade transition.
  *
- * Example XML:
  * ```xml
  * <com.elytelabs.ads.ui.BannerAdView
  *     android:id="@+id/bannerAdView"
  *     android:layout_width="match_parent"
  *     android:layout_height="wrap_content" />
- * ```
- *
- * Example Kotlin (fallback usage):
- * ```kotlin
- * override fun onAdFailedToLoad(error: LoadAdError) {
- *     bannerAdView.loadAd()
- * }
  * ```
  */
 class BannerAdView @JvmOverloads constructor(
@@ -51,9 +44,14 @@ class BannerAdView @JvmOverloads constructor(
     private val refreshRunnable = object : Runnable {
         override fun run() {
             loadAd()
-            refreshHandler.postDelayed(this, REFRESH_INTERVAL_MS)
+            refreshHandler.postDelayed(this, refreshIntervalMs)
         }
     }
+
+    private val refreshIntervalMs: Long
+        get() = AdsManager.config.bannerRefreshSeconds * 1000L
+
+    private var isFirstLoad = true
 
     init {
         visibility = View.GONE
@@ -63,12 +61,25 @@ class BannerAdView @JvmOverloads constructor(
      * Loads and displays a banner ad from the cached ad pool.
      *
      * If no ads are available, the view remains hidden (`View.GONE`).
-     * The banner will automatically refresh every 30 seconds after
-     * the first successful load.
+     * Subsequent calls trigger a smooth crossfade transition.
      */
     fun loadAd() {
         val adModel = AdsManager.bannerAdModel ?: return
 
+        if (isFirstLoad) {
+            // First load — show immediately
+            bindAd(adModel)
+            isFirstLoad = false
+        } else {
+            // Subsequent loads — crossfade
+            animate().alpha(0f).setDuration(FADE_DURATION_MS).withEndAction {
+                bindAd(adModel)
+                animate().alpha(1f).setDuration(FADE_DURATION_MS).start()
+            }.start()
+        }
+    }
+
+    private fun bindAd(adModel: com.elytelabs.ads.models.AdModel) {
         binding.tvAdTitle.text = adModel.title
         binding.tvAdDescription.text = adModel.description
         binding.btnInstall.text = context.getString(R.string.install)
@@ -77,17 +88,35 @@ class BannerAdView @JvmOverloads constructor(
             Glide.with(this).load(adModel.iconUrl).into(binding.ivAdIcon)
         }
 
+        // Apply theme overrides
+        AdsManager.theme?.let { theme ->
+            theme.buttonColor?.let { binding.btnInstall.background.setTint(it) }
+            theme.buttonTextColor?.let { binding.btnInstall.setTextColor(it) }
+            theme.bannerBackgroundColor?.let {
+                binding.root.setBackgroundColor(it)
+            }
+            theme.badgeColor?.let { color ->
+                binding.root.findViewWithTag<View>("ad_badge")?.let { badge ->
+                    (badge.background as? GradientDrawable)?.setColor(color)
+                }
+            }
+        }
+
         val clickListener = OnClickListener {
+            AdsManager.adListener?.onAdClicked(adModel)
             openPlayStore(adModel.id)
         }
         binding.root.setOnClickListener(clickListener)
         binding.btnInstall.setOnClickListener(clickListener)
         visibility = View.VISIBLE
+
+        // Fire impression callback
+        AdsManager.adListener?.onAdImpression(adModel)
     }
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        refreshHandler.postDelayed(refreshRunnable, REFRESH_INTERVAL_MS)
+        refreshHandler.postDelayed(refreshRunnable, refreshIntervalMs)
     }
 
     override fun onDetachedFromWindow() {
@@ -108,7 +137,6 @@ class BannerAdView @JvmOverloads constructor(
     }
 
     companion object {
-        /** Banner refresh interval in milliseconds (30 seconds). */
-        private const val REFRESH_INTERVAL_MS = 30_000L
+        private const val FADE_DURATION_MS = 150L
     }
 }

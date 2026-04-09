@@ -8,7 +8,11 @@
 # Keep public API surface
 -keep class com.elytelabs.ads.AdsManager { *; }
 -keep class com.elytelabs.ads.AdsManager$AdLoadListener { *; }
+-keep class com.elytelabs.ads.AdsConfig { *; }
+-keep class com.elytelabs.ads.AdsTheme { *; }
+-keep class com.elytelabs.ads.AdListener { *; }
 -keep class com.elytelabs.ads.ui.BannerAdView { *; }
+-keep class com.elytelabs.ads.ui.NativeAdView { *; }
 -keep class com.elytelabs.ads.ui.InterstitialAdActivity { *; }
 
 # Retrofit interface

@@ -23,21 +23,17 @@ import java.util.concurrent.TimeUnit
  * to fetch and cache promotional ads. The SDK is designed to be used as a **fallback**
  * when primary ad networks (e.g., AdMob) fail to fill.
  *
- * Ads are cached locally for 24 hours and served randomly to maximise
- * cross-promotion coverage. The current app's package name is automatically
- * excluded from the ad pool.
+ * Ads are cached locally (default 24 hours, configurable via [AdsConfig]) and
+ * served randomly to maximise cross-promotion coverage. The current app's
+ * package name is automatically excluded from the ad pool.
  *
  * Usage:
  * ```kotlin
- * // Initialize the SDK
- * AdsManager.init(context)
- *
- * // Listen for ads to be ready
- * AdsManager.addListener(object : AdsManager.AdLoadListener {
- *     override fun onAdsLoaded() {
- *         bannerAdView.loadAd()
- *     }
- * })
+ * AdsManager.init(context, AdsConfig(cacheHours = 12))
+ * AdsManager.adListener = object : AdListener {
+ *     override fun onAdClicked(ad: AdModel) { /* analytics */ }
+ * }
+ * AdsManager.theme = AdsTheme(buttonColor = Color.RED)
  * ```
  */
 object AdsManager {
@@ -46,7 +42,6 @@ object AdsManager {
     private const val PREFS_NAME = "ElyteAdsCache"
     private const val KEY_CACHED_ADS = "cached_ads_json"
     private const val KEY_LAST_FETCH = "last_fetch_time"
-    private val CACHE_DURATION_MS = TimeUnit.HOURS.toMillis(24)
 
     private val mainHandler = Handler(Looper.getMainLooper())
 
@@ -54,6 +49,31 @@ object AdsManager {
     private var cachedAdsList: List<AdModel> = emptyList()
 
     private val listeners = mutableListOf<WeakReference<AdLoadListener>>()
+
+    /** SDK configuration. Set via [init]. */
+    var config: AdsConfig = AdsConfig()
+        private set
+
+    /**
+     * Optional lifecycle listener for analytics and event tracking.
+     *
+     * ```kotlin
+     * AdsManager.adListener = object : AdListener {
+     *     override fun onAdImpression(ad: AdModel) { /* log */ }
+     *     override fun onAdClicked(ad: AdModel) { /* log */ }
+     * }
+     * ```
+     */
+    var adListener: AdListener? = null
+
+    /**
+     * Optional color overrides for the SDK's UI components.
+     *
+     * ```kotlin
+     * AdsManager.theme = AdsTheme(buttonColor = Color.parseColor("#FF5722"))
+     * ```
+     */
+    var theme: AdsTheme? = null
 
     /**
      * Returns a randomly selected [AdModel] for banner display.
@@ -69,9 +89,7 @@ object AdsManager {
     val interstitialAdModel: AdModel?
         get() = getRandomAd()
 
-    /**
-     * Callback interface notified when ads have been loaded and are ready to display.
-     */
+    /** Callback interface notified when ads are ready to display. */
     interface AdLoadListener {
         /** Called on the main thread when one or more ads are available. */
         fun onAdsLoaded()
@@ -79,11 +97,8 @@ object AdsManager {
 
     /**
      * Registers a listener for ad load events.
-     *
+     * Listeners are held via [WeakReference] to prevent Activity leaks.
      * If ads are already loaded, the listener is called back immediately.
-     * Listeners are held via [WeakReference] to prevent Activity/Fragment memory leaks.
-     *
-     * @param listener the callback to register
      */
     fun addListener(listener: AdLoadListener) {
         synchronized(listeners) {
@@ -94,11 +109,7 @@ object AdsManager {
         }
     }
 
-    /**
-     * Unregisters a previously added listener.
-     *
-     * @param listener the callback to remove
-     */
+    /** Unregisters a previously added listener. */
     fun removeListener(listener: AdLoadListener) {
         synchronized(listeners) {
             listeners.removeAll { it.get() == null || it.get() == listener }
@@ -123,25 +134,26 @@ object AdsManager {
     /**
      * Initialises the Elyte Labs ad SDK.
      *
-     * On first call, this will attempt to load ads from the local 24-hour cache.
-     * If the cache has expired or is empty, a network request is made to the
-     * Elyte Labs promotion API. The current app's package name is automatically
-     * excluded from the returned ads.
+     * On first call, attempts to load ads from the local cache.
+     * If the cache is expired or empty, a network request is made.
+     * The current app's package name is automatically excluded.
      *
-     * Safe to call multiple times; redundant calls are no-ops while the cache
-     * is still valid.
+     * Safe to call multiple times; redundant calls are no-ops while
+     * the cache is still valid.
      *
-     * @param context any Android context (Activity, Application, etc.)
+     * @param context any Android context
+     * @param config  optional SDK configuration (defaults to [AdsConfig])
      */
-    fun init(context: Context) {
+    fun init(context: Context, config: AdsConfig = AdsConfig()) {
+        this.config = config
         val appContext = context.applicationContext
+        val cacheDurationMs = TimeUnit.HOURS.toMillis(config.cacheHours.toLong())
 
         val prefs = appContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val lastFetchTime = prefs.getLong(KEY_LAST_FETCH, 0L)
         val currentTime = System.currentTimeMillis()
-        val cacheValid = currentTime - lastFetchTime < CACHE_DURATION_MS
+        val cacheValid = currentTime - lastFetchTime < cacheDurationMs
 
-        // If in-memory list is already populated AND cache is still valid, skip.
         if (cachedAdsList.isNotEmpty() && cacheValid) return
 
         if (cacheValid) {
@@ -153,7 +165,7 @@ object AdsManager {
                     if (items.isNotEmpty()) {
                         cachedAdsList = items
                         preloadIcons(appContext, items)
-                        Log.d(TAG, "Loaded ${items.size} ads from 24-hour cache.")
+                        Log.d(TAG, "Loaded ${items.size} ads from cache.")
                         notifyListeners()
                         return
                     }
@@ -170,8 +182,8 @@ object AdsManager {
         val packageName = appContext.packageName
 
         AdsClient.api.getAds(
-            limit = 50,
-            type = "apps",
+            limit = config.maxAdsToFetch,
+            type = config.adType,
             exclude = packageName
         ).enqueue(object : Callback<AdResponse> {
 
@@ -195,15 +207,20 @@ object AdsManager {
                         Log.d(TAG, "Fetched ${items.size} ads from network.")
                         notifyListeners()
                     } else {
-                        Log.w(TAG, "API returned empty items list.")
+                        Log.w(TAG, "API returned empty list.")
+                        mainHandler.post { adListener?.onAdFailedToLoad("Empty response") }
                     }
                 } else {
-                    Log.e(TAG, "API error: ${response.code()} ${response.message()}")
+                    val msg = "API error: ${response.code()} ${response.message()}"
+                    Log.e(TAG, msg)
+                    mainHandler.post { adListener?.onAdFailedToLoad(msg) }
                 }
             }
 
             override fun onFailure(call: Call<AdResponse>, t: Throwable) {
-                Log.e(TAG, "Network error fetching ads.", t)
+                val msg = "Network error: ${t.message}"
+                Log.e(TAG, msg, t)
+                mainHandler.post { adListener?.onAdFailedToLoad(msg) }
             }
         })
     }
@@ -216,17 +233,9 @@ object AdsManager {
         }
     }
 
-    /**
-     * Returns `true` if at least one ad is available for interstitial display.
-     */
-    fun isInterstitialLoaded(): Boolean {
-        return cachedAdsList.isNotEmpty()
-    }
+    /** Returns `true` if at least one ad is available for interstitial display. */
+    fun isInterstitialLoaded(): Boolean = cachedAdsList.isNotEmpty()
 
-    /**
-     * Returns `true` if at least one ad is available for banner display.
-     */
-    fun isBannerLoaded(): Boolean {
-        return cachedAdsList.isNotEmpty()
-    }
+    /** Returns `true` if at least one ad is available for banner display. */
+    fun isBannerLoaded(): Boolean = cachedAdsList.isNotEmpty()
 }

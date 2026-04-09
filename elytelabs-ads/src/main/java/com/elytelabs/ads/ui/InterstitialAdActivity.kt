@@ -13,21 +13,21 @@ import com.bumptech.glide.request.RequestOptions
 import com.elytelabs.ads.AdsManager
 import com.elytelabs.ads.R
 import com.elytelabs.ads.databinding.InterstitialAdBinding
+import com.elytelabs.ads.models.AdModel
 import jp.wasabeef.glide.transformations.BlurTransformation
 
 /**
  * Full-screen interstitial ad activity.
  *
- * This activity displays a single cross-promotional ad with a blurred ambient
- * background, app icon, title, description, and a prominent "Install" CTA button.
+ * Displays a single ad with a blurred ambient background, app icon, title,
+ * description, and a prominent "Install" CTA button.
  *
  * **Google Play Policy compliance:**
- * - A clearly visible close button is always present in the top-right corner.
- * - Only the "Install" button navigates to the Play Store; tapping elsewhere
- *   does **not** trigger navigation (no deceptive click areas).
- * - The ad is clearly labelled with an "Ad" badge.
+ * - Close button is always visible in the top-right corner.
+ * - Only the "Install" button navigates to the Play Store.
+ * - Clear "Ad" badge labelling.
  *
- * Launch via the companion [show] helper:
+ * Launch via [show]:
  * ```kotlin
  * if (AdsManager.isInterstitialLoaded()) {
  *     InterstitialAdActivity.show(context)
@@ -37,6 +37,7 @@ import jp.wasabeef.glide.transformations.BlurTransformation
 class InterstitialAdActivity : AppCompatActivity() {
 
     private lateinit var binding: InterstitialAdBinding
+    private var currentAd: AdModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,8 +57,9 @@ class InterstitialAdActivity : AppCompatActivity() {
             finish()
             return
         }
+        currentAd = adModel
 
-        // Populate ad content
+        // Populate content
         binding.tvAdTitle.text = adModel.title
         binding.tvAdDescription.text = adModel.description
         binding.btnInstall.text = getString(R.string.install)
@@ -67,7 +69,7 @@ class InterstitialAdActivity : AppCompatActivity() {
         binding.ivAdIcon.contentDescription = getString(R.string.ad_icon_description, adModel.title)
         binding.btnClose.contentDescription = getString(R.string.close_ad)
 
-        // Load blurred ambient background + crisp icon
+        // Load blurred background + crisp icon
         if (!adModel.iconUrl.isNullOrEmpty()) {
             Glide.with(this)
                 .load(adModel.iconUrl)
@@ -79,14 +81,28 @@ class InterstitialAdActivity : AppCompatActivity() {
                 .into(binding.ivAdIcon)
         }
 
-        // Close button — must always work per Google Play ad policy
+        // Apply theme overrides
+        AdsManager.theme?.let { theme ->
+            theme.buttonColor?.let { binding.btnInstall.background.setTint(it) }
+            theme.buttonTextColor?.let { binding.btnInstall.setTextColor(it) }
+        }
+
+        // Close button
         binding.btnClose.setOnClickListener { finish() }
 
-        // Only the Install button navigates to Play Store.
-        // Per Google Play policy, non-interactive areas must NOT trigger navigation.
+        // Install button — the ONLY element that navigates to Play Store
         binding.btnInstall.setOnClickListener {
+            AdsManager.adListener?.onAdClicked(adModel)
             openPlayStore(adModel.id)
         }
+
+        // Fire impression callback
+        AdsManager.adListener?.onAdImpression(adModel)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        AdsManager.adListener?.onAdDismissed()
     }
 
     private fun openPlayStore(packageId: String) {
@@ -101,7 +117,6 @@ class InterstitialAdActivity : AppCompatActivity() {
     companion object {
         /**
          * Launches the interstitial ad activity.
-         *
          * @param context the calling Activity or Application context
          */
         fun show(context: Context) {
