@@ -60,8 +60,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Feature graphic placed prominently (centered in available upper space) -->
+    <ImageView
+        android:id="@+id/ivFeatureGraphic"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:visibility="gone"
+        android:importantForAccessibility="no"
+        app:layout_constraintTop_toBottomOf="@+id/cardClose"
+        app:layout_constraintBottom_toTopOf="@+id/coreContainer"
+        app:layout_constraintVertical_bias="0.4" />
+
     <!-- Core App Container -->
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/coreContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="24dp"
@@ -126,7 +140,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:orientation="horizontal"
-            android:gravity="centerVertical"
+            android:gravity="center_vertical"
             android:visibility="gone"
             app:layout_constraintStart_toEndOf="@+id/iconContainer"
             app:layout_constraintEnd_toEndOf="parent"
