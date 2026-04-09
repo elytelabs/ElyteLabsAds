@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.elytelabs.ads"
-    compileSdk = 37
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 25
