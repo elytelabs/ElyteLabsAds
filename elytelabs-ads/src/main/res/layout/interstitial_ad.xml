@@ -64,14 +64,18 @@
     <ImageView
         android:id="@+id/ivFeatureGraphic"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        android:scaleType="fitCenter"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="H,2:1"
+        android:layout_marginHorizontal="24dp"
+        android:background="@drawable/bg_rounded_feature"
+        android:clipToOutline="true"
+        android:elevation="16dp"
+        android:scaleType="centerCrop"
         android:visibility="gone"
         android:importantForAccessibility="no"
         app:layout_constraintTop_toBottomOf="@+id/cardClose"
         app:layout_constraintBottom_toTopOf="@+id/coreContainer"
-        app:layout_constraintVertical_bias="0.4" />
+        app:layout_constraintVertical_bias="0.45" />
 
     <!-- Core App Container -->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -157,8 +161,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="3dp"
-                android:textColor="@color/ads_text_light"
+                android:textColor="@color/ads_badge_bg"
                 android:textSize="13sp"
+                android:textStyle="bold"
                 tools:text="4.5" />
 
             <TextView
