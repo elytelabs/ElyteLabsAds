@@ -55,7 +55,7 @@ afterEvaluate {
                 from(components["release"])
                 groupId = "com.elytelabs"
                 artifactId = "ads"
-                version = "1.0.0"
+                version = "1.0.1"
             }
         }
     }
