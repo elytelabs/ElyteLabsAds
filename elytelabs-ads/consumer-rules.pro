@@ -13,6 +13,7 @@
 -keep class com.elytelabs.ads.AdListener { *; }
 -keep class com.elytelabs.ads.ui.BannerAdView { *; }
 -keep class com.elytelabs.ads.ui.NativeAdView { *; }
+-keep class com.elytelabs.ads.ui.NativeAdMediumView { *; }
 -keep class com.elytelabs.ads.ui.InterstitialAdActivity { *; }
 
 # Retrofit interface
