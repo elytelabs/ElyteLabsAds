@@ -51,7 +51,7 @@ dependencyResolutionManagement {
 **1. Update `gradle/libs.versions.toml`**:
 ```toml
 [versions]
-elytelabs-ads = "1.0.2"
+elytelabs-ads = "1.1.0"
 
 [libraries]
 elytelabs-ads = { module = "com.github.elytelabs:ads-sdk", version.ref = "elytelabs-ads" }
@@ -68,7 +68,7 @@ dependencies {
 
 ```kotlin
 dependencies {
-    implementation("com.github.elytelabs:ads-sdk:1.0.2")
+    implementation("com.github.elytelabs:ads-sdk:1.1.0")
 }
 ```
 
