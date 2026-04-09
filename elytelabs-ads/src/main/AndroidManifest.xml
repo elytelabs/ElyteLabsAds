@@ -4,8 +4,9 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application>
-        <activity 
+        <activity
             android:name=".ui.InterstitialAdActivity"
+            android:exported="false"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
     </application>
 

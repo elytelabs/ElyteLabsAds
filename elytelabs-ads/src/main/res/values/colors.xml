@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="elyte_ads_white">#FFFFFF</color>
+    <color name="elyte_ads_black">#000000</color>
     <color name="elyte_ads_text_primary">#212121</color>
     <color name="elyte_ads_text_secondary">#757575</color>
+    <color name="elyte_ads_text_light">#E0E0E0</color>
     <color name="elyte_ads_badge_bg">#F4B400</color>
     <color name="elyte_ads_btn_bg">#4285F4</color>
     <color name="elyte_ads_icon_bg">#EEEEEE</color>
     <color name="elyte_ads_border">#E0E0E0</color>
     <color name="elyte_ads_overlay">#99000000</color>
+    <color name="elyte_ads_close_bg">#66000000</color>
 </resources>

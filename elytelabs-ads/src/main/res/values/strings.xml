@@ -2,4 +2,6 @@
 <resources>
     <string name="ad_badge">Ad</string>
     <string name="install">Install</string>
+    <string name="close_ad">Close ad</string>
+    <string name="ad_icon_description">%s app icon</string>
 </resources>

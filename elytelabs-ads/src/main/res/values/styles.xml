@@ -1,7 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="RoundedIcon" parent="">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">8dp</item>
-    </style>
+    <!-- Intentionally empty: no library-specific styles needed. -->
 </resources>
