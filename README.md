@@ -1,6 +1,6 @@
 # Elyte Labs Ads SDK
 
-[![](https://jitpack.io/v/ElyteLabs/ElyteLabsAds.svg)](https://jitpack.io/#ElyteLabs/ElyteLabsAds)
+[![](https://jitpack.io/v/elytelabs/elytelabsads.svg)](https://jitpack.io/#elytelabs/elytelabsads)
 [![API](https://img.shields.io/badge/API-25%2B-brightgreen.svg)](https://android-arsenal.com/api?level=25)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
@@ -52,7 +52,7 @@ In your app's `build.gradle.kts`:
 
 ```kotlin
 dependencies {
-    implementation("com.github.ElyteLabs:ElyteLabsAds:1.0.0")
+    implementation("com.github.elytelabs:elytelabsads:1.0.0")
 }
 ```
 
