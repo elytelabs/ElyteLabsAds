@@ -20,6 +20,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "ElyteLabsAds"
+rootProject.name = "ads-sdk"
 include(":app")
-include(":elytelabs-ads")
+include(":ads-sdk")

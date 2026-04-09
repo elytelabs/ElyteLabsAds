@@ -1,6 +1,6 @@
 # Elyte Labs Ads SDK
 
-[![](https://jitpack.io/v/elytelabs/elytelabsads.svg)](https://jitpack.io/#elytelabs/elytelabsads)
+[![](https://jitpack.io/v/elytelabs/ads-sdk.svg)](https://jitpack.io/#elytelabs/ads-sdk)
 [![API](https://img.shields.io/badge/API-25%2B-brightgreen.svg)](https://android-arsenal.com/api?level=25)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
@@ -46,13 +46,29 @@ dependencyResolutionManagement {
 }
 ```
 
-### Step 2: Add dependency
+### Modern Gradle (`libs.versions.toml`)
 
-In your app's `build.gradle.kts`:
+**1. Update `gradle/libs.versions.toml`**:
+```toml
+[versions]
+elytelabs-ads = "1.0.2"
+
+[libraries]
+elytelabs-ads = { module = "com.github.elytelabs:ads-sdk", version.ref = "elytelabs-ads" }
+```
+
+**2. Add to app `build.gradle.kts`**:
+```kotlin
+dependencies {
+    implementation(libs.elytelabs.ads)
+}
+```
+
+### Traditional Gradle
 
 ```kotlin
 dependencies {
-    implementation("com.github.elytelabs:elytelabsads:1.0.0")
+    implementation("com.github.elytelabs:ads-sdk:1.0.2")
 }
 ```
 

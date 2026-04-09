@@ -54,8 +54,8 @@ afterEvaluate {
             create<MavenPublication>("release") {
                 from(components["release"])
                 groupId = "com.elytelabs"
-                artifactId = "ads"
-                version = "1.0.1"
+                artifactId = "ads-sdk"
+                version = "1.0.2"
             }
         }
     }

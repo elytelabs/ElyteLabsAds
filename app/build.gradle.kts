@@ -38,5 +38,5 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.constraintlayout)
 
-    implementation(project(":elytelabs-ads"))
+    implementation(project(":ads-sdk"))
 }
