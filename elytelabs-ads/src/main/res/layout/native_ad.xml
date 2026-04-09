@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/elyte_ads_white"
+    android:background="@color/ads_white"
     android:paddingHorizontal="16dp"
     android:paddingVertical="12dp">
 
@@ -17,7 +17,7 @@
         android:paddingHorizontal="4dp"
         android:paddingVertical="1dp"
         android:text="@string/ad_badge"
-        android:textColor="@color/elyte_ads_white"
+        android:textColor="@color/ads_white"
         android:textSize="9sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -31,7 +31,7 @@
         android:layout_marginTop="6dp"
         app:cardCornerRadius="12dp"
         app:cardElevation="0dp"
-        app:cardBackgroundColor="@color/elyte_ads_icon_bg"
+        app:cardBackgroundColor="@color/ads_icon_bg"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvAdBadge">
 
@@ -52,7 +52,7 @@
         android:layout_marginEnd="8dp"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textColor="@color/elyte_ads_text_primary"
+        android:textColor="@color/ads_text_primary"
         android:textSize="15sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@+id/btnInstall"
@@ -72,7 +72,7 @@
         android:layout_marginTop="2dp"
         android:ellipsize="end"
         android:maxLines="2"
-        android:textColor="@color/elyte_ads_text_secondary"
+        android:textColor="@color/ads_text_secondary"
         android:textSize="13sp"
         app:layout_constraintEnd_toStartOf="@+id/btnInstall"
         app:layout_constraintStart_toEndOf="@+id/iconContainer"
@@ -87,8 +87,8 @@
         android:layout_height="36dp"
         android:text="@string/install"
         android:textSize="12sp"
-        android:textColor="@color/elyte_ads_white"
-        android:background="@drawable/elyte_ads_btn_bg"
+        android:textColor="@color/ads_white"
+        android:background="@drawable/ads_btn_bg"
         android:paddingHorizontal="16dp"
         android:textAllCaps="false"
         app:layout_constraintBottom_toBottomOf="@+id/iconContainer"
@@ -100,7 +100,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="12dp"
-        android:background="@color/elyte_ads_border"
+        android:background="@color/ads_border"
         app:layout_constraintTop_toBottomOf="@+id/iconContainer" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

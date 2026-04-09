@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Dark mode overrides -->
-    <color name="elyte_ads_white">#1E1E1E</color>
-    <color name="elyte_ads_black">#FFFFFF</color>
-    <color name="elyte_ads_text_primary">#FFFFFF</color>
-    <color name="elyte_ads_text_secondary">#B0B0B0</color>
-    <color name="elyte_ads_text_light">#CCCCCC</color>
-    <color name="elyte_ads_badge_bg">#F4B400</color>
-    <color name="elyte_ads_btn_bg">#6EA8FE</color>
-    <color name="elyte_ads_icon_bg">#2C2C2C</color>
-    <color name="elyte_ads_border">#333333</color>
-    <color name="elyte_ads_overlay">#CC000000</color>
-    <color name="elyte_ads_close_bg">#66000000</color>
+    <color name="ads_white">#1E1E1E</color>
+    <color name="ads_black">#FFFFFF</color>
+    <color name="ads_text_primary">#FFFFFF</color>
+    <color name="ads_text_secondary">#B0B0B0</color>
+    <color name="ads_text_light">#CCCCCC</color>
+    <color name="ads_badge_bg">#F4B400</color>
+    <color name="ads_btn_bg">#6EA8FE</color>
+    <color name="ads_icon_bg">#2C2C2C</color>
+    <color name="ads_border">#333333</color>
+    <color name="ads_overlay">#CC000000</color>
+    <color name="ads_close_bg">#66000000</color>
 </resources>

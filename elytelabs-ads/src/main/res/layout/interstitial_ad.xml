@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/elyte_ads_black">
+    android:background="@color/ads_black">
 
     <!-- Stretched ambient blur background -->
     <ImageView
@@ -30,7 +30,7 @@
         android:layout_height="40dp"
         android:layout_margin="16dp"
         app:cardCornerRadius="20dp"
-        app:cardBackgroundColor="@color/elyte_ads_close_bg"
+        app:cardBackgroundColor="@color/ads_close_bg"
         app:cardElevation="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -54,7 +54,7 @@
         android:paddingHorizontal="6dp"
         android:paddingVertical="2dp"
         android:text="@string/ad_badge"
-        android:textColor="@color/elyte_ads_white"
+        android:textColor="@color/ads_white"
         android:textSize="12sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -73,7 +73,7 @@
             android:layout_height="80dp"
             app:cardCornerRadius="16dp"
             app:cardElevation="8dp"
-            app:cardBackgroundColor="@color/elyte_ads_icon_bg"
+            app:cardBackgroundColor="@color/ads_icon_bg"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -92,7 +92,7 @@
             android:layout_marginStart="16dp"
             android:ellipsize="end"
             android:maxLines="2"
-            android:textColor="@color/elyte_ads_white"
+            android:textColor="@color/ads_white"
             android:textSize="22sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -110,7 +110,7 @@
             android:layout_marginTop="4dp"
             android:ellipsize="end"
             android:maxLines="2"
-            android:textColor="@color/elyte_ads_text_light"
+            android:textColor="@color/ads_text_light"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="@+id/iconContainer"
             app:layout_constraintEnd_toEndOf="parent"
@@ -127,8 +127,8 @@
             android:textAllCaps="false"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:textColor="@color/elyte_ads_white"
-            android:background="@drawable/elyte_ads_btn_bg"
+            android:textColor="@color/ads_white"
+            android:background="@drawable/ads_btn_bg"
             app:layout_constraintTop_toBottomOf="@+id/iconContainer" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
